@@ -1,6 +1,7 @@
 <?php
 require_once "./app/cors.php";
 require_once "./app/persons.php";
+date_default_timezone_set("America/Guayaquil");
 if ($_GET) {
     $data = "";
     $photo = "sin-photo.png";
