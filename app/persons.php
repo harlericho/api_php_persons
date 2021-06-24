@@ -24,9 +24,8 @@ class Persons extends Settings
             $query->bindParam(':email', $data['email'], PDO::PARAM_STR);
             $query->bindParam(':photo', $data['photo'], PDO::PARAM_STR);
             return $query->execute();
-        } catch (\Throwable $th) {
-            return $th->getMessage();
-            //die("Failed query: " . $th->getMessage());
+        } catch (PDOException $e) {
+            die("Failed query: " . $e->getMessage());
         }
     }
 
@@ -43,8 +42,7 @@ class Persons extends Settings
             $query->bindParam(':id', $data['id'], PDO::PARAM_INT);
             return $query->execute();
         } catch (\Throwable $th) {
-            //die("Failed query: " . $th->getMessage());
-            return $th->getMessage();
+            die("Failed query: " . $th->getMessage());
         }
     }
     public static function __deleteData($id)
@@ -55,8 +53,7 @@ class Persons extends Settings
             $query->bindParam(':id', $id, PDO::PARAM_INT);
             return $query->execute();
         } catch (\Throwable $th) {
-            //die("Failed query: " . $th->getMessage());
-            return $th->getMessage();
+            die("Failed query: " . $th->getMessage());
         }
     }
 
@@ -69,8 +66,20 @@ class Persons extends Settings
             $query->execute();
             return $query->fetchAll();
         } catch (\Throwable $th) {
-            //die("Failed query: " . $th->getMessage());
-            return $th->getMessage();
+            die("Failed query: " . $th->getMessage());
+        }
+    }
+    public static function __validationsDniUpdate($dni, $id)
+    {
+        try {
+            $sql = "SELECT COUNT(*) FROM persons WHERE dni=:dni OR id=:id";
+            $query = Settings::__db()->prepare($sql);
+            $query->bindParam(':dni', $dni, PDO::PARAM_STR);
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+            $query->execute();
+            return $query->fetchColumn();
+        } catch (\Throwable $th) {
+            die("Failed query: " . $th->getMessage());
         }
     }
     public static function __validationsEmail($email)
@@ -80,10 +89,22 @@ class Persons extends Settings
             $query = Settings::__db()->prepare($sql);
             $query->bindParam(':email', $email, PDO::PARAM_STR);
             $query->execute();
-            return $query->fetchAll();
+            return $query->fetch();
         } catch (\Throwable $th) {
-            //die("Failed query: " . $th->getMessage());
-            return $th->getMessage();
+            die("Failed query: " . $th->getMessage());
+        }
+    }
+    public static function __validationsEmailUpdate($email,$id)
+    {
+        try {
+            $sql = "SELECT COUNT(*) FROM persons WHERE email=:email OR id=:id";
+            $query = Settings::__db()->prepare($sql);
+            $query->bindParam(':email', $email, PDO::PARAM_STR);
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+            $query->execute();
+            return $query->fetchColumn();
+        } catch (\Throwable $th) {
+            die("Failed query: " . $th->getMessage());
         }
     }
     public static function __foundImage($id)
@@ -95,8 +116,7 @@ class Persons extends Settings
             $query->execute();
             return $query->fetch();
         } catch (\Throwable $th) {
-            //die("Failed query: " . $th->getMessage());
-            return $th->getMessage();
+            die("Failed query: " . $th->getMessage());
         }
     }
 }
